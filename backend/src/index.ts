@@ -1,26 +1,46 @@
-import { Request, Response, NextFunction } from 'express';
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
+import { UserController } from './interfaces/http/UserController';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 import dotenv from 'dotenv';
 
 dotenv.config();
-const prisma = new PrismaClient();
 
-export const app = express();
-export default prisma;
+const app = express();
+const port = process.env.PORT || 8000;
 
-const port = 3010;
+// Middleware
+app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Hola LTI!');
-});
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'User API',
+      version: '1.0.0',
+      description: 'A simple User API with DDD architecture',
+    },
+    servers: [
+      {
+        url: `http://localhost:${port}`,
+      },
+    ],
+  },
+  apis: ['./src/interfaces/http/*.ts'],
+};
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.type('text/plain'); 
-  res.status(500).send('Something broke!');
-});
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+// Routes
+const userController = new UserController();
+app.post('/users', (req, res) => userController.create(req, res));
+
+// Start server
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running on port ${port}`);
+  console.log(
+    `Swagger documentation available at http://localhost:${port}/api-docs`,
+  );
 });

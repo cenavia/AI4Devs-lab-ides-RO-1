@@ -76,7 +76,7 @@ Instala Docker en tu máquina si aún no lo has hecho. Puedes descargarlo desde 
 Navega al directorio raíz del proyecto en tu terminal.
 Ejecuta el siguiente comando para iniciar el contenedor Docker:
 ```
-docker-compose up -d
+docker compose up -d
 ```
 Esto iniciará una base de datos PostgreSQL en un contenedor Docker. La bandera -d corre el contenedor en modo separado, lo que significa que se ejecuta en segundo plano.
 
