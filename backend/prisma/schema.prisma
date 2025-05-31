@@ -13,5 +13,36 @@ model User {
   name      String
   createdAt DateTime @default(now())
 
+  // Relations
+  candidates Candidate[]
+
   @@map("users")
+}
+
+model Candidate {
+  id               String          @id @default(uuid())
+  firstName        String
+  lastName         String
+  email            String          @unique
+  phone            String?
+  address          Json?
+  educations       Json?
+  workExperiences  Json?
+  skills           Json?
+  resumeUrl        String?
+  notes            String?
+  status           CandidateStatus @default(ACTIVE)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  createdById      String
+  createdBy        User            @relation(fields: [createdById], references: [id])
+
+  @@map("candidates")
+}
+
+enum CandidateStatus {
+  ACTIVE
+  INACTIVE
+  HIRED
+  REJECTED
 }

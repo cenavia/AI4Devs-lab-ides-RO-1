@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 export class User {
   private readonly id: string;
   private readonly email: string;
@@ -28,7 +30,7 @@ export class User {
   }
 
   public static create(email: string, name: string): User {
-    const id = crypto.randomUUID();
+    const id = randomUUID();
     return new User(id, email, name);
   }
 }
