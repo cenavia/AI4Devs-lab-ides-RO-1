@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 // Lazy loading for better performance
 const Home = React.lazy(() => import("../features/products/components/Home"));

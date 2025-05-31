@@ -1,0 +1,192 @@
+# TypeScript Full-Stack Project Rules
+
+You are an expert full-stack TypeScript developer with deep knowledge of React, Node.js, Express, Prisma, and modern web development best practices.
+
+## Project Context
+This is a full-stack web application for talent tracking (LTI - Sistema de Seguimiento de Talento) with:
+- Frontend: React 18 + TypeScript + Tailwind CSS + Jest
+- Backend: Express.js + TypeScript + Prisma ORM
+- Database: PostgreSQL (via Docker)
+- Infrastructure: Docker Compose
+
+## Code Style & Standards
+
+### TypeScript
+- Use TypeScript for all new code
+- Prefer interfaces over types for object shapes
+- Use strict type checking
+- Avoid `any` type; use `unknown` or proper types
+- Use const assertions where appropriate
+- Prefer function declarations over arrow functions for top-level functions
+
+### React Frontend
+- Use functional components with hooks
+- Prefer named exports over default exports
+- Use TypeScript interfaces for component props
+- Follow the composition pattern over inheritance
+- Use React.memo() for performance optimization when needed
+- Implement proper error boundaries
+- Use custom hooks for reusable logic
+
+### Express Backend
+- Use async/await instead of callbacks
+- Implement proper error handling middleware
+- Use TypeScript types for request/response objects
+- Follow REST API conventions
+- Implement input validation for all endpoints
+- Use dependency injection patterns where appropriate
+
+### Prisma & Database
+- Use Prisma schema-first approach
+- Implement proper database migrations
+- Use transactions for multi-step operations
+- Follow naming conventions (camelCase for fields)
+- Implement proper indexing strategies
+- Use proper error handling for database operations
+
+## File Structure & Organization
+
+### Frontend Structure
+```
+frontend/src/
+├── components/          # Reusable UI components
+├── pages/              # Page components
+├── hooks/              # Custom React hooks
+├── services/           # API service functions
+├── types/              # TypeScript type definitions
+├── utils/              # Utility functions
+└── __tests__/          # Test files
+```
+
+### Backend Structure
+```
+backend/src/
+├── controllers/        # Route handlers
+├── middleware/         # Express middleware
+├── models/            # Data models/types
+├── routes/            # Route definitions
+├── services/          # Business logic
+├── utils/             # Utility functions
+└── __tests__/         # Test files
+```
+
+## Best Practices
+
+### Error Handling
+- Always handle errors gracefully
+- Use proper HTTP status codes
+- Implement consistent error response format
+- Log errors appropriately (without sensitive data)
+
+### Security
+- Validate all user inputs
+- Use HTTPS in production
+- Implement proper authentication/authorization
+- Sanitize data before database operations
+- Use environment variables for sensitive configuration
+
+### Performance
+- Implement proper caching strategies
+- Use database indexing effectively
+- Optimize React rendering with React.memo and useMemo
+- Implement pagination for large data sets
+- Use code splitting where appropriate
+
+### Testing
+- Write unit tests for utilities and pure functions
+- Write integration tests for API endpoints
+- Test React components with React Testing Library
+- Maintain test coverage above 80%
+- Use meaningful test descriptions
+
+## Code Examples
+
+### API Route Pattern
+```typescript
+// backend/src/routes/users.ts
+import { Router, Request, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
+
+const router = Router();
+const prisma = new PrismaClient();
+
+router.get('/users/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(id) }
+    });
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+```
+
+### React Component Pattern
+```typescript
+// frontend/src/components/UserCard.tsx
+import React from 'react';
+
+interface UserCardProps {
+  id: number;
+  name: string;
+  email: string;
+  onEdit?: (id: number) => void;
+}
+
+export const UserCard: React.FC<UserCardProps> = ({ 
+  id, 
+  name, 
+  email, 
+  onEdit 
+}) => {
+  return (
+    <div className="bg-white shadow-md rounded-lg p-4">
+      <h3 className="text-lg font-semibold">{name}</h3>
+      <p className="text-gray-600">{email}</p>
+      {onEdit && (
+        <button 
+          onClick={() => onEdit(id)}
+          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Edit
+        </button>
+      )}
+    </div>
+  );
+};
+```
+
+## Development Workflow
+1. Always run type checking before committing
+2. Ensure tests pass before pushing changes
+3. Use meaningful commit messages following conventional commits
+4. Update documentation when adding new features
+5. Review code for security vulnerabilities
+6. Test in development environment before production deployment
+
+## Common Patterns to Follow
+- Use dependency injection for better testability
+- Implement proper logging throughout the application
+- Use environment variables for configuration
+- Follow the principle of least privilege for database access
+- Implement proper input validation and sanitization
+- Use proper HTTP methods (GET, POST, PUT, DELETE, PATCH)
+- Implement proper CORS configuration
+
+## Common Anti-patterns to Avoid
+- Don't use `any` type in TypeScript
+- Don't commit sensitive data (API keys, passwords)
+- Don't use direct DOM manipulation in React
+- Don't ignore error handling
+- Don't hardcode configuration values
+- Don't use synchronous operations in Node.js
+- Don't expose internal implementation details in APIs
+
+When working on this project, always consider maintainability, scalability, security, and user experience. Ask clarifying questions if requirements are unclear, and suggest improvements when you see opportunities. 
